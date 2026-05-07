@@ -43,9 +43,9 @@ export function SiteHeader() {
               <span className="absolute -top-1 -right-1 size-5 rounded-full bg-primary text-primary-foreground text-[11px] font-semibold grid place-items-center">{cartCount}</span>
             )}
           </Link>
-          <Link to={auth.role ? (auth.role === "chef" ? "/kitchen" : "/admin") : "/login"} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium hover:bg-secondary transition">
+          <Link to={role ? (role === "chef" ? "/kitchen" : "/admin") : "/login"} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium hover:bg-secondary transition">
             <User className="size-4" />
-            <span className="hidden sm:inline">{auth.role ? auth.name : "Staff Login"}</span>
+            <span className="hidden sm:inline">{role ? name : "Staff Login"}</span>
           </Link>
         </div>
       </div>
