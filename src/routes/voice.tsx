@@ -78,7 +78,24 @@ function VoicePage() {
     setMessages(next);
     setThinking(true);
     try {
-      const { reply } = await voiceOrderChat({ data: { messages: next } });
+      const { reply, actions } = await voiceOrderChat({ data: { messages: next } });
+      // Apply cart actions
+      if (Array.isArray(actions)) {
+        for (const a of actions) {
+          if (a.type === "clear") { cartClear(); continue; }
+          if (!a.id) continue;
+          const item = menu.find((m) => m.id === String(a.id));
+          if (!item) continue;
+          if (a.type === "add") {
+            const qty = Math.max(1, Number(a.qty ?? 1));
+            for (let i = 0; i < qty; i++) cartAdd(item);
+            toast.success(`Added ${qty} × ${item.name}`);
+          } else if (a.type === "remove") {
+            cartRemove(item.id);
+            toast.success(`Removed ${item.name}`);
+          }
+        }
+      }
       setMessages((m) => [...m, { role: "assistant", content: reply }]);
       speak(reply);
     } catch (e: any) {
