@@ -11,6 +11,7 @@ export function SiteHeader() {
   const nav = [
     { to: "/", label: "Home" },
     { to: "/menu", label: "Menu" },
+    { to: "/voice", label: "Voice Order" },
     { to: "/track", label: "Track Order" },
   ];
 

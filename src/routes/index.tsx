@@ -37,8 +37,11 @@ function Landing() {
               <Link to="/menu" className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-primary-foreground font-medium shadow-warm hover:scale-[1.02] transition">
                 Order now <ArrowRight className="size-4" />
               </Link>
-              <Link to="/login" className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3 font-medium hover:bg-secondary transition">
-                <ChefHat className="size-4" /> Restaurant login
+              <Link to="/voice" className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3 font-medium hover:bg-secondary transition">
+                <Mic className="size-4" /> Try Voice AI
+              </Link>
+              <Link to="/login" className="inline-flex items-center gap-2 rounded-xl px-6 py-3 font-medium text-muted-foreground hover:text-foreground transition">
+                <ChefHat className="size-4" /> Staff login
               </Link>
             </div>
             <div className="mt-10 grid grid-cols-3 gap-6 max-w-md">
