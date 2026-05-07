@@ -1,12 +1,17 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { ShoppingBag, Flame, User } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useCart, useAuth } from "@/lib/store";
 
 export function SiteHeader() {
   const items = useCart((s) => s.items);
   const auth = useAuth();
   const path = useRouterState({ select: (s) => s.location.pathname });
-  const cartCount = items.reduce((n, i) => n + i.qty, 0);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const cartCount = mounted ? items.reduce((n, i) => n + i.qty, 0) : 0;
+  const role = mounted ? auth.role : null;
+  const name = mounted ? auth.name : "";
 
   const nav = [
     { to: "/", label: "Home" },
