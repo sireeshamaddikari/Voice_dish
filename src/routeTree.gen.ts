@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VoiceRouteImport } from './routes/voice'
 import { Route as TrackRouteImport } from './routes/track'
 import { Route as MenuRouteImport } from './routes/menu'
 import { Route as LoginRouteImport } from './routes/login'
@@ -24,6 +25,11 @@ import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminMenuRouteImport } from './routes/admin.menu'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 
+const VoiceRoute = VoiceRouteImport.update({
+  id: '/voice',
+  path: '/voice',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TrackRoute = TrackRouteImport.update({
   id: '/track',
   path: '/track',
@@ -103,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/menu': typeof MenuRoute
   '/track': typeof TrackRoute
+  '/voice': typeof VoiceRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/orders': typeof AdminOrdersRoute
@@ -118,6 +125,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/menu': typeof MenuRoute
   '/track': typeof TrackRoute
+  '/voice': typeof VoiceRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/orders': typeof AdminOrdersRoute
@@ -135,6 +143,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/menu': typeof MenuRoute
   '/track': typeof TrackRoute
+  '/voice': typeof VoiceRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/orders': typeof AdminOrdersRoute
@@ -153,6 +162,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/menu'
     | '/track'
+    | '/voice'
     | '/admin/analytics'
     | '/admin/menu'
     | '/admin/orders'
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/menu'
     | '/track'
+    | '/voice'
     | '/admin/analytics'
     | '/admin/menu'
     | '/admin/orders'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/menu'
     | '/track'
+    | '/voice'
     | '/admin/analytics'
     | '/admin/menu'
     | '/admin/orders'
@@ -201,10 +213,18 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MenuRoute: typeof MenuRoute
   TrackRoute: typeof TrackRoute
+  VoiceRoute: typeof VoiceRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/voice': {
+      id: '/voice'
+      path: '/voice'
+      fullPath: '/voice'
+      preLoaderRoute: typeof VoiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/track': {
       id: '/track'
       path: '/track'
@@ -336,7 +356,18 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MenuRoute: MenuRoute,
   TrackRoute: TrackRoute,
+  VoiceRoute: VoiceRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
