@@ -28,6 +28,11 @@ function VoicePage() {
   ]);
   const [interim, setInterim] = useState("");
   const recognitionRef = useRef<any>(null);
+  const cartAdd = useCart((s) => s.add);
+  const cartRemove = useCart((s) => s.remove);
+  const cartClear = useCart((s) => s.clear);
+  const cartItems = useCart((s) => s.items);
+  const cartCount = cartItems.reduce((n, i) => n + i.qty, 0);
 
   useEffect(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
