@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
-import { Mic, MicOff, Volume2, Sparkles, Loader2 } from "lucide-react";
+import { Mic, MicOff, Volume2, Sparkles, Loader2, ShoppingBag } from "lucide-react";
 import { voiceOrderChat } from "@/utils/voice-order.functions";
+import { useCart } from "@/lib/store";
+import { menu } from "@/lib/data";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/voice")({
@@ -25,6 +28,11 @@ function VoicePage() {
   ]);
   const [interim, setInterim] = useState("");
   const recognitionRef = useRef<any>(null);
+  const cartAdd = useCart((s) => s.add);
+  const cartRemove = useCart((s) => s.remove);
+  const cartClear = useCart((s) => s.clear);
+  const cartItems = useCart((s) => s.items);
+  const cartCount = cartItems.reduce((n, i) => n + i.qty, 0);
 
   useEffect(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -70,7 +78,24 @@ function VoicePage() {
     setMessages(next);
     setThinking(true);
     try {
-      const { reply } = await voiceOrderChat({ data: { messages: next } });
+      const { reply, actions } = await voiceOrderChat({ data: { messages: next } });
+      // Apply cart actions
+      if (Array.isArray(actions)) {
+        for (const a of actions) {
+          if (a.type === "clear") { cartClear(); continue; }
+          if (!a.id) continue;
+          const item = menu.find((m) => m.id === String(a.id));
+          if (!item) continue;
+          if (a.type === "add") {
+            const qty = Math.max(1, Number(a.qty ?? 1));
+            for (let i = 0; i < qty; i++) cartAdd(item);
+            toast.success(`Added ${qty} × ${item.name}`);
+          } else if (a.type === "remove") {
+            cartRemove(item.id);
+            toast.success(`Removed ${item.name}`);
+          }
+        }
+      }
       setMessages((m) => [...m, { role: "assistant", content: reply }]);
       speak(reply);
     } catch (e: any) {
@@ -143,6 +168,19 @@ function VoicePage() {
             ))}
           </div>
         </div>
+
+        {cartItems.length > 0 && (
+          <div className="mt-6 rounded-2xl border border-border bg-card p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3 text-sm">
+              <ShoppingBag className="size-4 text-primary" />
+              <span className="font-medium">{cartCount} item{cartCount === 1 ? "" : "s"} in cart</span>
+              <span className="text-muted-foreground hidden sm:inline">
+                {cartItems.map((i) => `${i.qty}× ${i.name}`).join(", ")}
+              </span>
+            </div>
+            <Link to="/cart" className="rounded-lg bg-primary px-4 py-2 text-primary-foreground text-sm font-medium">Checkout</Link>
+          </div>
+        )}
 
         <p className="text-center text-xs text-muted-foreground mt-6">
           Speech is processed locally by your browser. Conversation is handled by Lovable AI.
