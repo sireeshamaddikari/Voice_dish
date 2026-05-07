@@ -169,6 +169,19 @@ function VoicePage() {
           </div>
         </div>
 
+        {cartItems.length > 0 && (
+          <div className="mt-6 rounded-2xl border border-border bg-card p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3 text-sm">
+              <ShoppingBag className="size-4 text-primary" />
+              <span className="font-medium">{cartCount} item{cartCount === 1 ? "" : "s"} in cart</span>
+              <span className="text-muted-foreground hidden sm:inline">
+                {cartItems.map((i) => `${i.qty}× ${i.name}`).join(", ")}
+              </span>
+            </div>
+            <Link to="/cart" className="rounded-lg bg-primary px-4 py-2 text-primary-foreground text-sm font-medium">Checkout</Link>
+          </div>
+        )}
+
         <p className="text-center text-xs text-muted-foreground mt-6">
           Speech is processed locally by your browser. Conversation is handled by Lovable AI.
         </p>
