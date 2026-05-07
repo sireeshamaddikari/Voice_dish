@@ -1,16 +1,22 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { ShoppingBag, Flame, User } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useCart, useAuth } from "@/lib/store";
 
 export function SiteHeader() {
   const items = useCart((s) => s.items);
   const auth = useAuth();
   const path = useRouterState({ select: (s) => s.location.pathname });
-  const cartCount = items.reduce((n, i) => n + i.qty, 0);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const cartCount = mounted ? items.reduce((n, i) => n + i.qty, 0) : 0;
+  const role = mounted ? auth.role : null;
+  const name = mounted ? auth.name : "";
 
   const nav = [
     { to: "/", label: "Home" },
     { to: "/menu", label: "Menu" },
+    { to: "/voice", label: "Voice Order" },
     { to: "/track", label: "Track Order" },
   ];
 
@@ -37,9 +43,9 @@ export function SiteHeader() {
               <span className="absolute -top-1 -right-1 size-5 rounded-full bg-primary text-primary-foreground text-[11px] font-semibold grid place-items-center">{cartCount}</span>
             )}
           </Link>
-          <Link to={auth.role ? (auth.role === "chef" ? "/kitchen" : "/admin") : "/login"} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium hover:bg-secondary transition">
+          <Link to={role ? (role === "chef" ? "/kitchen" : "/admin") : "/login"} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium hover:bg-secondary transition">
             <User className="size-4" />
-            <span className="hidden sm:inline">{auth.role ? auth.name : "Staff Login"}</span>
+            <span className="hidden sm:inline">{role ? name : "Staff Login"}</span>
           </Link>
         </div>
       </div>
