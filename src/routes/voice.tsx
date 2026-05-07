@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Mic, MicOff, Volume2, Sparkles, Loader2 } from "lucide-react";
-import { voiceOrderChat } from "@/server/voice-order.functions";
+import { voiceOrderChat } from "@/utils/voice-order.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/voice")({
