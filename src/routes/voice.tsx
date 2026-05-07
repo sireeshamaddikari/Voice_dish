@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
-import { Mic, MicOff, Volume2, Sparkles, Loader2 } from "lucide-react";
+import { Mic, MicOff, Volume2, Sparkles, Loader2, ShoppingBag } from "lucide-react";
 import { voiceOrderChat } from "@/utils/voice-order.functions";
+import { useCart } from "@/lib/store";
+import { menu } from "@/lib/data";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/voice")({
