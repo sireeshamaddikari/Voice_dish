@@ -12,4 +12,8 @@ export default defineConfig({
   tanstackStart: {
     server: { entry: "server" },
   },
+  vite: {
+    // .env lives in src/ — without this, server functions never see API keys.
+    envDir: "src",
+  },
 });
